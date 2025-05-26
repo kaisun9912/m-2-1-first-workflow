@@ -1,5 +1,12 @@
 name: First Workflow
-on: workflow_dispatch
+
+on:
+  push:
+    paths:
+      - '.github/workflows/deploy_gke.yaml'
+      - 'infra/kustomize/**'
+  workflow_dispatch:
+
 jobs:
   first-job:
     runs-on: ubuntu-latest
