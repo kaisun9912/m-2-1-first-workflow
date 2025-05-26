@@ -8,3 +8,33 @@ jobs:
         run: echo "Hello World!"
       - name: Print goodbye
         run: echo "Done - bye!"
+
+      - name: Determine branch
+        run: |
+          BRANCH_NAME=""
+          if [ "${{ github.event_name }}" == "push" ]; then
+            BRANCH_NAME="${{ github.ref }}"
+          elif [ "${{ github.event_name }}" == "pull_request" ]; then
+            BRANCH_NAME="${{ github.head_ref }}"
+          elif [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            BRANCH_NAME="${{ github.ref }}"
+          fi
+      
+          # Extract the branch name from the ref
+          BRANCH_NAME=$(echo $BRANCH_NAME | sed 's|refs/heads/||')
+          echo $BRANCH_NAME
+          echo "${{ github.event_name }}"
+          
+          # Set variables based on the branch name
+          if [[ "$BRANCH_NAME" == "develop" || "$BRANCH_NAME" == feature/* ]]; then
+            echo "Setting variables for develop branch"
+            # Set develop branch variables here
+          elif [[ "$BRANCH_NAME" == "uat" ]]; then
+            echo "Setting variables for uat branch"
+            # Set uat branch variables here
+          elif [[ "$BRANCH_NAME" == "main" ]]; then
+            echo "Setting variables for main branch"
+            # Set main branch variables here
+          else
+            echo "Branch not recognized"
+          fi
